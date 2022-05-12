@@ -1,0 +1,74 @@
+:root {
+    --clr-bg: #14213D;
+    --clr-white: #FFF;
+    --clr-primary: #FCA311;
+    font-size: 18px;
+}
+
+:root, button {
+    font-family: "Lato", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--clr-bg);
+    color: var(--clr-white);
+}
+
+.container {
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    row-gap: 2rem;
+    width: min(600px, 100%);
+    min-height: 100vh;
+    margin: auto;
+    box-shadow: 0px 5px 20px #0c1527;
+}
+
+header {
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+main {
+    display: grid;
+    align-items: space-around;
+}
+
+#stopwatch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+}
+
+.button-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2rem;
+    list-style: none;
+}
+
+.button-list button {
+    --box-shadow-height: 7px;
+    background-color: var(--clr-primary);
+    box-shadow: 0 var(--box-shadow-height) 0 #c87f0a;
+    border: none;
+    border-radius: 0.35rem;
+    font-size: 1rem;
+    padding: 10px 20px;
+    width: 100%;
+    transition: all 0.1s ease;
+}
+
+.button-list button:active {
+    transform: translateY(var(--box-shadow-height));
+    box-shadow: none;
+}
