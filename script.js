@@ -28,14 +28,34 @@ class Stopwatch {
 
         this.last_time = null;
         this.elapsed = 0;
-        this.element.innerText = "0.00";
+        this.updateTime()
     }
 
     update() {
         const current_time = Date.now();
         this.elapsed += current_time - this.last_time;
         this.last_time = current_time;
-        this.element.innerText = (this.elapsed * 0.001).toFixed(2);
+        this.updateTime()
+    }
+
+    updateTime() {
+        const totalSec = Math.floor(this.elapsed / 1000);
+        const hour = Math.floor(totalSec / 3600);
+        const min = Math.floor(totalSec / 60) % 60;
+        const sec = totalSec % 60;
+        const milli = Math.floor(this.elapsed % 1000 / 10);
+        this.element.innerHTML = (hour > 0 ? `${Stopwatch.format(hour)}:` : "")
+            .concat(`${Stopwatch.format(min)}:`)
+            .concat(`${Stopwatch.format(sec)}`)
+            .concat(`<span class='text-primary'>.${Stopwatch.format(milli)}</span>`);
+    }
+
+    static format(time) {
+        let str = time.toString();
+        if (time < 10) {
+            str = "0".concat(str);
+        }
+        return str;
     }
 }
 

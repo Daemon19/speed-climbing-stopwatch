@@ -48,6 +48,10 @@ main {
     font-size: 3rem;
 }
 
+.text-primary {
+    color: var(--clr-primary);
+}
+
 .button-list {
     display: flex;
     justify-content: center;
