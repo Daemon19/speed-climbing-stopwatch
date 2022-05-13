@@ -1,11 +1,12 @@
 :root {
-    --clr-bg: #14213D;
-    --clr-white: #FFF;
-    --clr-primary: #FCA311;
+    --clr-bg: #14213d;
+    --clr-white: #fff;
+    --clr-primary: #fca311;
     font-size: 18px;
 }
 
-:root, button {
+:root,
+button {
     font-family: "Lato", sans-serif;
 }
 
@@ -54,7 +55,7 @@ main {
     color: var(--clr-primary);
 }
 
-.button-list {
+#button-list {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,7 +63,7 @@ main {
     list-style: none;
 }
 
-.button-list button {
+#button-list button {
     --box-shadow-height: 7px;
     background-color: var(--clr-primary);
     color: var(--clr-bg);
@@ -75,7 +76,7 @@ main {
     transition: all 0.1s ease;
 }
 
-.button-list button:active {
+#button-list button:active {
     transform: translateY(var(--box-shadow-height));
     box-shadow: none;
 }

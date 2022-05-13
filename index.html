@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Timer</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Speed Climbing Stopwatch</h1>
+            </header>
 
-<body>
+            <main>
+                <p id="stopwatch"></p>
 
-    <div class="container">
+                <ul id="button-list">
+                    <li>
+                        <button onclick="stopwatch.start()" name="start">
+                            Start
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="stopwatch.stop()" name="stop">
+                            Stop
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="stopwatch.reset()" name="reset">
+                            Reset
+                        </button>
+                    </li>
+                </ul>
+            </main>
+        </div>
 
-        <header>
-            <h1>Speed Climbing Stopwatch</h1>
-        </header>
-
-        <main>
-            <p id="stopwatch"></p>
-
-            <ul class="button-list">
-                <li><button onclick="stopwatch.start()">Start</button></li>
-                <li><button onclick="stopwatch.stop()">Stop</button></li>
-                <li><button onclick="stopwatch.reset()">Reset</button></li>
-            </ul>
-        </main>
-
-    </div>
-
-    <script src="script.js"></script>
-
-</body>
-
+        <script src="script.js"></script>
+    </body>
 </html>
