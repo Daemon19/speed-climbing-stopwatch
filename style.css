@@ -20,19 +20,21 @@ body {
 }
 
 .container {
+    box-sizing: border-box;
     display: grid;
     grid-template-rows: min-content 1fr;
     row-gap: 2rem;
     width: min(600px, 100%);
     min-height: 100vh;
     margin: auto;
+    padding: 0 1rem;
     box-shadow: 0px 5px 20px #0c1527;
 }
 
 header {
     text-align: center;
     font-family: "Montserrat", sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     margin-top: 1.25rem;
 }
 
@@ -63,6 +65,7 @@ main {
 .button-list button {
     --box-shadow-height: 7px;
     background-color: var(--clr-primary);
+    color: var(--clr-bg);
     box-shadow: 0 var(--box-shadow-height) 0 #c87f0a;
     border: none;
     border-radius: 0.35rem;
@@ -75,4 +78,10 @@ main {
 .button-list button:active {
     transform: translateY(var(--box-shadow-height));
     box-shadow: none;
+}
+
+@media screen and (min-width: 576px) {
+    header {
+        font-size: 1.25rem;
+    }
 }
