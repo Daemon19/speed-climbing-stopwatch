@@ -32,8 +32,8 @@ class StartState extends State {
             this.playing.play();
         };
 
-        atMarks.onended = () => setTimeout(() => playSound(ready), 100);
-        ready.onended = () => setTimeout(() => playSound(startSignal), 100);
+        atMarks.onended = () => setTimeout(() => playSound(ready), 1000);
+        ready.onended = () => setTimeout(() => playSound(startSignal), 1000);
         startSignal.onended = () =>
             (this.stopwatch.state = new RunningState(this.stopwatch));
 
