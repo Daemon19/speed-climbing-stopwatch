@@ -49,7 +49,7 @@ class Stopwatch {
 
         this.lastTime = null;
         this.elapsed = 0;
-        this.updateTime()
+        this.updateView()
     }
 
     update() {
@@ -60,10 +60,10 @@ class Stopwatch {
 
     setElapsed(elapsed) {
         this.elapsed = elapsed;
-        this.updateTime();
+        this.updateView();
     }
 
-    updateTime() {
+    updateView() {
         const totalSec = Math.floor(this.elapsed / 1000);
         const hour = Math.floor(totalSec / 3600);
         const min = Math.floor(totalSec / 60) % 60;
