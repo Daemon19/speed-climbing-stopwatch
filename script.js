@@ -1,90 +1,125 @@
-
 const atMarks = new Audio("sounds/at-marks.wav");
 const ready = new Audio("sounds/ready.wav");
 const startSignal = new Audio("sounds/start-signal.wav");
 
-class Stopwatch {
-    constructor(element) {
-        this.element = element;
-        this.timeoutId = null;
-        this.intervalId = null;
-        this.running = false;
-        this.reset();
+class State {
+    constructor(stopwatch) {
+        this.stopwatch = stopwatch;
+    }
+
+    start() {}
+    stop() {}
+    reset() {}
+}
+
+class IdleState extends State {
+    constructor(stopwatch) {
+        super(stopwatch);
+        this.stopwatch.updateView(0);
     }
 
     start() {
-        if (this.running) {
-            return;
-        }
+        this.stopwatch.state = new StartState(this.stopwatch);
+    }
+}
 
-        this.running = true;
+class StartState extends State {
+    constructor(stopwatch) {
+        super(stopwatch);
 
-        atMarks.onended = () => this.setTimeout(() => ready.play(), 1000);
-        ready.onended = () => this.setTimeout(() => startSignal.play(), 1000);
-        startSignal.onended = () => {
-            this.lastTime = Date.now();
-            this.setInterval(() => this.update(), 10);
-        }
-        this.setTimeout(() => atMarks.play(), 500);
+        const playSound = sound => {
+            this.playing = sound;
+            this.playing.play();
+        };
+
+        atMarks.onended = () => setTimeout(() => playSound(ready), 100);
+        ready.onended = () => setTimeout(() => playSound(startSignal), 100);
+        startSignal.onended = () =>
+            (this.stopwatch.state = new RunningState(this.stopwatch));
+
+        playSound(atMarks);
     }
 
     stop() {
-        if (this.timeoutId !== null) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-        }
+        this.playing.pause();
+        this.playing.currentTime = 0;
+        clearTimeout();
+        this.stopwatch.state = new IdleState(this.stopwatch);
+    }
+}
 
-        if (this.intervalId !== null) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
-
-        this.running = false;
+class RunningState extends State {
+    constructor(stopwatch) {
+        super(stopwatch);
+        this.elapsed = 0;
+        this.unpause();
     }
 
-    reset() {
-        if (this.running) {
-            return;
-        }
-
-        this.lastTime = null;
-        this.elapsed = 0;
-        this.updateView()
+    stop() {
+        clearInterval(this.intervalId);
+        this.stopwatch.state = new PauseState(this);
     }
 
     update() {
         const currentTime = Date.now();
-        this.setElapsed(this.elapsed + currentTime - this.lastTime);
-        this.lastTime = currentTime;
+        this.elapsed += currentTime - this.startTime;
+        this.startTime = currentTime;
+        this.stopwatch.updateView(this.elapsed);
     }
 
-    setElapsed(elapsed) {
-        this.elapsed = elapsed;
-        this.updateView();
+    unpause() {
+        this.startTime = Date.now();
+        this.intervalId = setInterval(() => this.update(), 10);
+    }
+}
+
+class PauseState extends State {
+    constructor(runningState) {
+        super(runningState.stopwatch);
+        this.runningState = runningState;
     }
 
-    updateView() {
-        const totalSec = Math.floor(this.elapsed / 1000);
+    start() {
+        this.stopwatch.state = this.runningState;
+        this.stopwatch.state.unpause();
+    }
+
+    reset() {
+        this.stopwatch.state = new IdleState(this.stopwatch);
+    }
+}
+
+class Stopwatch {
+    constructor(element) {
+        this.element = element;
+        this.state = new IdleState(this);
+        this.updateView(0);
+    }
+
+    start() {
+        this.state.start();
+    }
+
+    stop() {
+        this.state.stop();
+    }
+
+    reset() {
+        this.state.reset();
+    }
+
+    updateView(elapsed) {
+        const totalSec = Math.floor(elapsed / 1000);
         const hour = Math.floor(totalSec / 3600);
         const min = Math.floor(totalSec / 60) % 60;
         const sec = totalSec % 60;
-        const milli = Math.floor(this.elapsed % 1000 / 10);
+        const milli = Math.floor((elapsed % 1000) / 10);
         this.element.innerHTML = (hour > 0 ? `${Stopwatch.format(hour)}:` : "")
             .concat(`${Stopwatch.format(min)}:`)
             .concat(`${Stopwatch.format(sec)}`)
-            .concat(`<span class='text-primary'>.${Stopwatch.format(milli)}</span>`);
-    }
-
-    setTimeout(handler, timeout) {
-        if (!this.running)
-            return;
-        this.timeoutId = setTimeout(handler, timeout);
-    }
-
-    setInterval(handler, timeout) {
-        if (!this.running)
-            return;
-        this.intervalId = setInterval(handler, timeout);
+            .concat(
+                `<span class='text-primary'>.${Stopwatch.format(milli)}</span>`
+            );
     }
 
     static format(time) {
