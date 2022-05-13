@@ -1,113 +1,94 @@
 
-const AT_YOUR_MARKS_DURATION = 2000;
-const READY_DURATION = 2000;
-const TIT_DURATION = 1000;
-
-class Delay {
-    constructor(duration, message) {
-        this.duration = duration;
-        this.message = message;
-        this.startTime = null;
-    }
-
-    isDone() {
-        const currentTime = Date.now();
-
-        if (this.startTime === null) {
-            this.startTime = currentTime;
-        }
-
-        return currentTime - this.startTime > this.duration;
-    }
-}
+const atMarks = new Audio("sounds/at-marks.wav");
+const ready = new Audio("sounds/ready.wav");
+const startSignal = new Audio("sounds/start-signal.wav");
 
 class Stopwatch {
     constructor(element) {
         this.element = element;
-        this.interval_id = null;
+        this.timeoutId = null;
+        this.intervalId = null;
+        this.running = false;
         this.reset();
     }
 
     start() {
-        if (this.interval_id !== null) {
+        if (this.running) {
             return;
         }
 
-        this.interval_id = setInterval(() => this.update(), 10);
+        this.running = true;
 
-        if (this.last_time !== null) {
-            return;
+        atMarks.onended = () => this.setTimeout(() => ready.play(), 1000);
+        ready.onended = () => this.setTimeout(() => startSignal.play(), 1000);
+        startSignal.onended = () => {
+            this.lastTime = Date.now();
+            this.setInterval(() => this.update(), 10);
         }
-
-        this.delay_queue = [
-            new Delay(AT_YOUR_MARKS_DURATION, "At Your Marks"),
-            new Delay(READY_DURATION, "Ready"),
-            new Delay(TIT_DURATION, "🔴"),
-            new Delay(TIT_DURATION, "🟡"),
-        ];
+        this.setTimeout(() => atMarks.play(), 500);
     }
 
     stop() {
-        clearInterval(this.interval_id);
-        this.interval_id = null;
-
-        if (this.delay_queue.length) {
-            this.reset();
+        if (this.timeoutId !== null) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
         }
+
+        if (this.intervalId !== null) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
+
+        this.running = false;
     }
 
     reset() {
-        if (this.interval_id !== null) {
+        if (this.running) {
             return;
         }
 
-        this.last_time = null;
-        this.delay_queue = [];
+        this.lastTime = null;
         this.elapsed = 0;
         this.updateTime()
     }
 
     update() {
-        if (this.delay_queue.length) {
-            if (!this.delay_queue[0].isDone()) {
-                this.updateTime();
-                return;
-            }
+        const currentTime = Date.now();
+        this.setElapsed(this.elapsed + currentTime - this.lastTime);
+        this.lastTime = currentTime;
+    }
 
-            this.delay_queue.shift();
-            return this.update();
-        }
-
-        const current_time = Date.now();
-        this.elapsed += current_time - (this.last_time || current_time);
-        this.last_time = current_time;
-        this.updateTime()
+    setElapsed(elapsed) {
+        this.elapsed = elapsed;
+        this.updateTime();
     }
 
     updateTime() {
-        if (this.delay_queue.length) {
-            this.element.innerText = this.delay_queue[0].message;
-            return;
-        }
-
         const totalSec = Math.floor(this.elapsed / 1000);
         const hour = Math.floor(totalSec / 3600);
         const min = Math.floor(totalSec / 60) % 60;
         const sec = totalSec % 60;
         const milli = Math.floor(this.elapsed % 1000 / 10);
-
         this.element.innerHTML = (hour > 0 ? `${Stopwatch.format(hour)}:` : "")
             .concat(`${Stopwatch.format(min)}:`)
             .concat(`${Stopwatch.format(sec)}`)
             .concat(`<span class='text-primary'>.${Stopwatch.format(milli)}</span>`);
     }
 
+    setTimeout(handler, timeout) {
+        if (!this.running)
+            return;
+        this.timeoutId = setTimeout(handler, timeout);
+    }
+
+    setInterval(handler, timeout) {
+        if (!this.running)
+            return;
+        this.intervalId = setInterval(handler, timeout);
+    }
+
     static format(time) {
-        let str = time.toString();
-        if (time < 10) {
-            str = "0".concat(str);
-        }
-        return str;
+        return (time < 10 ? "0" : "").concat(time.toString());
     }
 }
 
