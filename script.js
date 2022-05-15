@@ -2,6 +2,10 @@ const atMarks = new Audio("sounds/at-marks.wav");
 const ready = new Audio("sounds/ready.wav");
 const startSignal = new Audio("sounds/start-signal.wav");
 
+const startButton = document.getElementById("start-btn");
+const stopButton = document.getElementById("stop-btn");
+const resetButton = document.getElementById("reset-btn");
+
 class State {
     constructor(stopwatch) {
         this.stopwatch = stopwatch;
@@ -129,3 +133,7 @@ class Stopwatch {
 
 const stopwatch_element = document.getElementById("stopwatch");
 const stopwatch = new Stopwatch(stopwatch_element);
+
+startButton.onclick = () => stopwatch.start();
+stopButton.onclick = () => stopwatch.stop();
+resetButton.onclick = () => stopwatch.reset();
