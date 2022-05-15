@@ -46,7 +46,7 @@ class StartState extends State {
         playSound(atMarks);
     }
 
-    pause() {
+    reset() {
         this.playing.pause();
         this.playing.currentTime = 0;
         clearTimeout();
