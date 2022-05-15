@@ -4,6 +4,7 @@ const startSignal = new Audio("sounds/start-signal.wav");
 
 const startButton = document.getElementById("start-btn");
 const stopButton = document.getElementById("stop-btn");
+const resumeButton = document.getElementById("resume-btn");
 const resetButton = document.getElementById("reset-btn");
 
 class State {
@@ -13,6 +14,7 @@ class State {
 
     start() {}
     stop() {}
+    resume() {}
     reset() {}
 }
 
@@ -83,7 +85,7 @@ class PauseState extends State {
         this.runningState = runningState;
     }
 
-    start() {
+    resume() {
         this.stopwatch.state = this.runningState;
         this.stopwatch.state.unpause();
     }
@@ -106,6 +108,10 @@ class Stopwatch {
 
     stop() {
         this.state.stop();
+    }
+
+    resume() {
+        this.state.resume();
     }
 
     reset() {
@@ -136,4 +142,5 @@ const stopwatch = new Stopwatch(stopwatch_element);
 
 startButton.onclick = () => stopwatch.start();
 stopButton.onclick = () => stopwatch.stop();
+resumeButton.onclick = () => stopwatch.resume();
 resetButton.onclick = () => stopwatch.reset();
