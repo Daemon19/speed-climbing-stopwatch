@@ -3,7 +3,7 @@ const ready = new Audio("sounds/ready.wav");
 const startSignal = new Audio("sounds/start-signal.wav");
 
 const startButton = document.getElementById("start-btn");
-const stopButton = document.getElementById("stop-btn");
+const pauseButton = document.getElementById("pause-btn");
 const resumeButton = document.getElementById("resume-btn");
 const resetButton = document.getElementById("reset-btn");
 
@@ -13,7 +13,7 @@ class State {
     }
 
     start() {}
-    stop() {}
+    pause() {}
     resume() {}
     reset() {}
 }
@@ -46,7 +46,7 @@ class StartState extends State {
         playSound(atMarks);
     }
 
-    stop() {
+    pause() {
         this.playing.pause();
         this.playing.currentTime = 0;
         clearTimeout();
@@ -61,7 +61,7 @@ class RunningState extends State {
         this.unpause();
     }
 
-    stop() {
+    pause() {
         clearInterval(this.intervalId);
         this.stopwatch.state = new PauseState(this);
     }
@@ -106,8 +106,8 @@ class Stopwatch {
         this.state.start();
     }
 
-    stop() {
-        this.state.stop();
+    pause() {
+        this.state.pause();
     }
 
     resume() {
@@ -141,6 +141,6 @@ const stopwatch_element = document.getElementById("stopwatch");
 const stopwatch = new Stopwatch(stopwatch_element);
 
 startButton.onclick = () => stopwatch.start();
-stopButton.onclick = () => stopwatch.stop();
+pauseButton.onclick = () => stopwatch.pause();
 resumeButton.onclick = () => stopwatch.resume();
 resetButton.onclick = () => stopwatch.reset();
