@@ -21,6 +21,7 @@ class State {
 class IdleState extends State {
     constructor(stopwatch) {
         super(stopwatch);
+        setButtonsVisibility(true, false, false, false);
         this.stopwatch.updateView(0);
     }
 
@@ -32,6 +33,7 @@ class IdleState extends State {
 class StartState extends State {
     constructor(stopwatch) {
         super(stopwatch);
+        setButtonsVisibility(false, false, false, true);
 
         const playSound = sound => {
             this.playing = sound;
@@ -76,12 +78,14 @@ class RunningState extends State {
     unpause() {
         this.startTime = Date.now();
         this.intervalId = setInterval(() => this.update(), 10);
+        setButtonsVisibility(false, true, false, false);
     }
 }
 
 class PauseState extends State {
     constructor(runningState) {
         super(runningState.stopwatch);
+        setButtonsVisibility(false, false, true, true);
         this.runningState = runningState;
     }
 
@@ -135,6 +139,16 @@ class Stopwatch {
     static format(time) {
         return (time < 10 ? "0" : "").concat(time.toString());
     }
+}
+
+function setButtonsVisibility(start, pause, resume, reset) {
+    const setVisibility = (button, visibility) =>
+        (button.parentElement.style.display = visibility ? "unset" : "none");
+
+    setVisibility(startButton, start);
+    setVisibility(pauseButton, pause);
+    setVisibility(resumeButton, resume);
+    setVisibility(resetButton, reset);
 }
 
 const stopwatch_element = document.getElementById("stopwatch");
